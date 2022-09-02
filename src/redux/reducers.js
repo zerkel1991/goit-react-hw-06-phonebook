@@ -1,38 +1,27 @@
-
-import { ADD,DELETE,CHANGE_FILTER } from "./types";
-
-
-
-
-const contactsReducer = (state = [],{type,payload}) =>{
-
-  switch (type) {
-    case ADD:
-      const isDublicate = state.find(el => el.name === payload.name)
-      if(isDublicate){
-        alert (`${payload.name} is already in contacts`)
-        return state
-      }
-      return [...state,payload];
-
-    case DELETE:
-      return state.filter(el => el.id !== payload)
-
-    default:
+import { createReducer } from '@reduxjs/toolkit';
+import { addContact, deleteContact, changeFilter } from './actions';
+const initialContacts = [
+  { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
+  { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
+  { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
+  { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
+];
+const contactsReducer = createReducer(initialContacts, {
+  [addContact]: (state, action) => {
+    const isDublicate = state.find(el => el.name === action.payload.name);
+    if (isDublicate) {
+      alert(`${action.payload.name} is already in contacts`);
       return state;
-  };
-};
-const filterReducer = (state = '',{type,payload}) =>{
-
-  switch (type) {
-    case CHANGE_FILTER:
-      return payload;
-
+    }
+    return [...state, action.payload];
+  },
+  [deleteContact]: (state, action) =>
+    state.filter(el => el.id !== action.payload),
+});
 
 
-    default:
-      return state;
-  };
-};
+const filterReducer = createReducer('', {
+  [changeFilter]: (_, action) => action.payload,
+});
 
-export {contactsReducer,filterReducer}
+export { contactsReducer, filterReducer };
